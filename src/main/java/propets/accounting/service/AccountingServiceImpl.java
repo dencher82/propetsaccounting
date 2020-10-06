@@ -2,6 +2,7 @@ package propets.accounting.service;
 
 import java.util.Set;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,27 +15,28 @@ import propets.accounting.dto.AccountDto;
 import propets.accounting.dto.AccountUpdateDto;
 import propets.accounting.dto.exception.AccountExistsException;
 import propets.accounting.dto.exception.AccountNotFoundException;
+import propets.accounting.dto.exception.BadRequestException;
 import propets.accounting.model.Account;
 import propets.accounting.service.security.AccountingSecurity;
 
 @Service
 public class AccountingServiceImpl implements AccountingService {
-	
+
 	@Autowired
 	ModelMapper mapper;
-	
+
 	@Autowired
 	AccountingRepository repository;
-	
+
 	@Autowired
 	AccountingSecurity securityService;
 
 	@Value("${default.avatar}")
 	private String defaultAvatar;
-	
+
 	@Value("${default.role}")
 	private String defaultRole;
-	
+
 	@Override
 	public AccountDto registerUser(AccountCreateDto accountCreateDto) {
 		if (repository.existsById(accountCreateDto.getEmail())) {
@@ -52,11 +54,32 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 
 	private void loginCheck(String email) {
-		// TODO Auto-generated method stub		
+		EmailValidator validator = EmailValidator.getInstance();
+		if (!validator.isValid(email)) {
+			throw new BadRequestException();
+		}
 	}
 
 	private void passwordCheck(String password) {
-		// TODO Auto-generated method stub		
+		if (password.length() < 7) {
+			throw new BadRequestException();
+		} else {
+			boolean upper = false;
+			boolean lower = false;
+			boolean number = false;
+			for (char c : password.toCharArray()) {
+				if (Character.isUpperCase(c)) {
+					upper = true;
+				} else if (Character.isLowerCase(c)) {
+					lower = true;
+				} else if (Character.isDigit(c)) {
+					number = true;
+				}
+			}
+			if (!upper || !lower || !number) {
+				throw new BadRequestException();
+			}
+		}
 	}
 
 	@Override
@@ -80,7 +103,7 @@ public class AccountingServiceImpl implements AccountingService {
 		if (accountUpdateDto.getName() != null && !accountUpdateDto.getName().isEmpty()) {
 			account.setName(accountUpdateDto.getName());
 		}
-		if (accountUpdateDto.getPhone() != null && !accountUpdateDto.getPhone().isEmpty()) {  
+		if (accountUpdateDto.getPhone() != null && !accountUpdateDto.getPhone().isEmpty()) {
 			account.setPhone(accountUpdateDto.getPhone());
 		}
 		repository.save(account);
