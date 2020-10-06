@@ -112,7 +112,6 @@ public class AccountingServiceImpl implements AccountingService {
 
 	@Override
 	public boolean blockUser(String login, String blockStatus) {
-		System.out.println(login + "   " + blockStatus);
 		Account account = repository.findById(login).orElseThrow(() -> new AccountNotFoundException(login));
 		if ("true".equals(blockStatus)) {
 			account.setFlBlocked(true);

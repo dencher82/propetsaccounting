@@ -1,5 +1,6 @@
 package propets.accounting;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -25,9 +26,10 @@ public class ProPetsAccountingApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		if (!repository.existsById("admin")) {
+			String hashPassword = BCrypt.hashpw("admin", BCrypt.gensalt());
 			Account admin = new Account("adnin", "admin");
 			admin.setAvatar(defaultAvatar);
-			admin.setPassword("admin");
+			admin.setPassword(hashPassword);
 			admin.addRole("Admin");
 			admin.addRole("Moderator");
 			admin.addRole("User");

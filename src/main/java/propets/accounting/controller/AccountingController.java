@@ -63,7 +63,6 @@ public class AccountingController {
 	
 	@PutMapping("/{login}/block/{status}")
 	public boolean blockUser(@PathVariable String login, @PathVariable String status) {
-		System.out.println(login);
 		return accountingService.blockUser(login, status);
 	}
 	
