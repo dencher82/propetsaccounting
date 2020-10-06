@@ -61,27 +61,28 @@ public class AccountingController {
 		return accountingService.deleteRole(login, role);
 	}
 	
-	@PutMapping("{login}/block/{status")
+	@PutMapping("/{login}/block/{status}")
 	public boolean blockUser(@PathVariable String login, @PathVariable String status) {
+		System.out.println(login);
 		return accountingService.blockUser(login, status);
 	}
 	
-	@PutMapping("{login}/favorite/{postId}")
+	@PutMapping("/{login}/favorite/{postId}")
 	public void addFavorite(@PathVariable String login, @PathVariable String postId) {
 		accountingService.addFavorite(login, postId);
 	}
 	
-	@PutMapping("{login}/activity/{postId}")
+	@PutMapping("/{login}/activity/{postId}")
 	public void addActivity(@PathVariable String login, @PathVariable String postId) {
 		accountingService.addActivity(login, postId);
 	}
 	
-	@DeleteMapping("{login}/favorite/{postId}")
+	@DeleteMapping("/{login}/favorite/{postId}")
 	public void removeFavorite(@PathVariable String login, @PathVariable String postId) {
 		accountingService.removeFavorite(login, postId);
 	}
 	
-	@DeleteMapping("{login}/activity/{postId}")
+	@DeleteMapping("/{login}/activity/{postId}")
 	public void removeActivity(@PathVariable String login, @PathVariable String postId) {
 		accountingService.removeActivity(login, postId);
 	}

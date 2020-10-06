@@ -1,13 +1,39 @@
 package propets.accounting;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import propets.accounting.dao.AccountingRepository;
+import propets.accounting.model.Account;
+
 @SpringBootApplication
-public class ProPetsAccountingApplication {
+public class ProPetsAccountingApplication implements CommandLineRunner {
+	
+	@Value("${default.avatar}")
+	private String defaultAvatar;
+	
+	@Autowired
+	AccountingRepository repository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProPetsAccountingApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		if (!repository.existsById("admin")) {
+			Account admin = new Account("adnin", "admin");
+			admin.setAvatar(defaultAvatar);
+			admin.setPassword("admin");
+			admin.addRole("Admin");
+			admin.addRole("Moderator");
+			admin.addRole("User");
+			repository.save(admin);
+		}
+		
 	}
 
 }
