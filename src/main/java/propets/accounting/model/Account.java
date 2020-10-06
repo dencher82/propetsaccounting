@@ -26,6 +26,7 @@ public class Account {
 	Set<String> roles = new HashSet<>();
 	Set<String> favorites = new HashSet<>();
 	Set<String> activities = new HashSet<>();
+	boolean flBlocked;
 	
 	public Account(String email, String name) {
 		this.email = email;

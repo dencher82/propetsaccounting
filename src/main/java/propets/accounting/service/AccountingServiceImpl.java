@@ -41,6 +41,7 @@ public class AccountingServiceImpl implements AccountingService {
 			throw new AccountExistsException(accountCreateDto.getEmail());
 		}
 		passwordCheck(accountCreateDto.getPassword());
+		loginCheck(accountCreateDto.getEmail());
 		String hashPassword = BCrypt.hashpw(accountCreateDto.getPassword(), BCrypt.gensalt());
 		Account account = new Account(accountCreateDto.getEmail(), accountCreateDto.getName());
 		account.setPassword(hashPassword);
@@ -48,6 +49,10 @@ public class AccountingServiceImpl implements AccountingService {
 		account.addRole(defaultRole);
 		repository.save(account);
 		return mapper.map(account, AccountDto.class);
+	}
+
+	private void loginCheck(String email) {
+		// TODO Auto-generated method stub		
 	}
 
 	private void passwordCheck(String password) {
@@ -107,7 +112,15 @@ public class AccountingServiceImpl implements AccountingService {
 
 	@Override
 	public boolean blockUser(String login, String blockStatus) {
-		// TODO Auto-generated method stub
+		Account account = repository.findById(login).orElseThrow(() -> new AccountNotFoundException(login));
+		if ("true".equals(blockStatus)) {
+			account.setFlBlocked(true);
+			return true;
+		}
+		if ("false".equals(blockStatus)) {
+			account.setFlBlocked(false);
+			return true;
+		}
 		return false;
 	}
 

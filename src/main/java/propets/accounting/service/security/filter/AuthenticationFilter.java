@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import propets.accounting.dto.exception.AccountNotFoundException;
@@ -20,6 +21,7 @@ import propets.accounting.dto.exception.UnauthorizedException;
 import propets.accounting.service.security.AccountingSecurity;
 
 @Service
+@Order(10)
 public class AuthenticationFilter implements Filter{
 	
 	@Autowired
