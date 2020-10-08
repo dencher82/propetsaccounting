@@ -5,15 +5,18 @@ import java.security.Principal;
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static propets.accounting.configuration.Constants.*;
 import propets.accounting.dto.AccountCreateDto;
 import propets.accounting.dto.AccountDto;
 import propets.accounting.dto.AccountUpdateDto;
@@ -27,7 +30,7 @@ public class AccountingController {
 	AccountingService accountingService;
 	
 	@PostMapping("/registration")
-	public AccountDto registerUser(@RequestBody AccountCreateDto accountCreateDto) {
+	public ResponseEntity<AccountDto> registerUser(@RequestBody AccountCreateDto accountCreateDto) {
 		return accountingService.registerUser(accountCreateDto);		
 	}
 	
@@ -92,8 +95,8 @@ public class AccountingController {
 	}
 	
 	@GetMapping("/token/validation")
-	void tokenValidation() {
-		
+	public void tokenValidation(@RequestHeader(TOKEN_HEADER) String token) {
+		accountingService.tokenValidation(token);
 	}
 	
 }

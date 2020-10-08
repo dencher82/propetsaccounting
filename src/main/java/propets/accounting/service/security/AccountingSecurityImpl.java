@@ -20,14 +20,13 @@ public class AccountingSecurityImpl implements AccountingSecurity {
 	AccountingRepository repository;
 
 	@Override
-	public String authentication(String token) {
+	public String getLogin(String token) {
 		AccountLoginDto accountLoginDto = tokenDecode(token);
 		Account account = repository.findById(accountLoginDto.getLogin())
 				.orElseThrow(() -> new AccountNotFoundException(accountLoginDto.getLogin()));
 		if (!BCrypt.checkpw(accountLoginDto.getPassword(), account.getPassword())) {
 			throw new UnauthorizedException();
 		}
-		//TODO account blocked
 		return account.getEmail();
 	}
 

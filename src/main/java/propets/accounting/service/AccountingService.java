@@ -2,13 +2,15 @@ package propets.accounting.service;
 
 import java.util.Set;
 
+import org.springframework.http.ResponseEntity;
+
 import propets.accounting.dto.AccountCreateDto;
 import propets.accounting.dto.AccountDto;
 import propets.accounting.dto.AccountUpdateDto;
 
 public interface AccountingService {
 
-	AccountDto registerUser(AccountCreateDto accountCreateDto);
+	ResponseEntity<AccountDto> registerUser(AccountCreateDto accountCreateDto);
 	
 	AccountDto loginUser(String login);
 	
@@ -34,6 +36,6 @@ public interface AccountingService {
 	
 	Set<String> getUserDate(String login, boolean dataType);
 	
-	void tokenValidation();
+	void tokenValidation(String token);
 	
 }

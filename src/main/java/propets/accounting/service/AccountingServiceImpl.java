@@ -7,8 +7,12 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import static propets.accounting.configuration.Constants.*;
 import propets.accounting.dao.AccountingRepository;
 import propets.accounting.dto.AccountCreateDto;
 import propets.accounting.dto.AccountDto;
@@ -18,6 +22,7 @@ import propets.accounting.dto.exception.AccountNotFoundException;
 import propets.accounting.dto.exception.BadRequestException;
 import propets.accounting.model.Account;
 import propets.accounting.service.security.AccountingSecurity;
+import propets.accounting.service.security.TokenService;
 
 @Service
 public class AccountingServiceImpl implements AccountingService {
@@ -30,6 +35,9 @@ public class AccountingServiceImpl implements AccountingService {
 
 	@Autowired
 	AccountingSecurity securityService;
+	
+	@Autowired
+	TokenService tokenService;
 
 	@Value("${default.avatar}")
 	private String defaultAvatar;
@@ -38,7 +46,7 @@ public class AccountingServiceImpl implements AccountingService {
 	private String defaultRole;
 
 	@Override
-	public AccountDto registerUser(AccountCreateDto accountCreateDto) {
+	public ResponseEntity<AccountDto> registerUser(AccountCreateDto accountCreateDto) {
 		if (repository.existsById(accountCreateDto.getEmail())) {
 			throw new AccountExistsException(accountCreateDto.getEmail());
 		}
@@ -50,7 +58,11 @@ public class AccountingServiceImpl implements AccountingService {
 		account.setAvatar(defaultAvatar);
 		account.addRole(defaultRole);
 		repository.save(account);
-		return mapper.map(account, AccountDto.class);
+		AccountDto accountDto = mapper.map(account, AccountDto.class);
+		String token = tokenService.createToken(accountCreateDto.getEmail(), accountCreateDto.getPassword());
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(TOKEN_HEADER, token);
+		return new ResponseEntity<AccountDto>(accountDto, headers, HttpStatus.OK);
 	}
 
 	private void loginCheck(String email) {
@@ -188,9 +200,8 @@ public class AccountingServiceImpl implements AccountingService {
 	}
 
 	@Override
-	public void tokenValidation() {
-		// TODO Auto-generated method stub
-
+	public void tokenValidation(String token) {
+		tokenService.tokenValidation(token);
 	}
 
 }
