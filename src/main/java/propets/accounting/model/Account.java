@@ -1,8 +1,11 @@
 package propets.accounting.model;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,20 +16,28 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
-@Setter
 @EqualsAndHashCode(of = {"email"})
 @Document(collection = "accounts")
 public class Account {
+	
+	@Value("${block.period}")
+	int blockPeriod;
+	
 	@Id
 	String email;
+	@Setter
 	String password;
+	@Setter
 	String name;
+	@Setter
 	String avatar;
+	@Setter
 	String phone;
 	Set<String> roles = new HashSet<>();
 	Set<String> favorites = new HashSet<>();
 	Set<String> activities = new HashSet<>();
 	boolean flBlocked;
+	long timeUnblock;
 	
 	public Account(String email, String name) {
 		this.email = email;
@@ -34,11 +45,11 @@ public class Account {
 	}
 	
 	public boolean addRole(String role) {
-		return roles.add(role);
+		return roles.add(role.toUpperCase());
 	}
 	
 	public boolean removeRole(String role) {
-		return roles.remove(role);
+		return roles.remove(role.toUpperCase());
 	}
 
 	public void addFavorite(String postId) {
@@ -55,6 +66,18 @@ public class Account {
 	
 	public void removeActivity(String postId) {
 		activities.remove(postId);
+	}
+	
+	public boolean blockAccount(String blockStatus) {
+		if ("true".equalsIgnoreCase(blockStatus)) {
+			flBlocked = true;
+			timeUnblock = Instant.now().plus(blockPeriod, ChronoUnit.DAYS).toEpochMilli();
+			return true;
+		} else if ("false".equalsIgnoreCase(blockStatus)) {
+			flBlocked = false;
+			return true;
+		}
+		return false;
 	}
 	
 }

@@ -27,12 +27,12 @@ public class ProPetsAccountingApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		if (!repository.existsById("admin")) {
 			String hashPassword = BCrypt.hashpw("admin", BCrypt.gensalt());
-			Account admin = new Account("adnin", "admin");
+			Account admin = new Account("admin", "admin");
 			admin.setAvatar(defaultAvatar);
 			admin.setPassword(hashPassword);
-			admin.addRole("Admin");
-			admin.addRole("Moderator");
-			admin.addRole("User");
+			admin.addRole("ADMIN");
+			admin.addRole("MODERATOR");
+			admin.addRole("USER");
 			repository.save(admin);
 		}
 		

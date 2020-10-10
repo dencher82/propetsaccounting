@@ -50,10 +50,12 @@ public class AuthenticationFilter implements Filter {
 					String token = request.getHeader("Authorization");
 					String login = securityService.getLogin(token);
 					Account account = repository.findById(login).orElse(null);
-					response.setHeader(TOKEN_HEADER, tokenService.createToken(login, account.getPassword()));
 					request = new WrapperRequest(request, login);
+					response.setHeader(TOKEN_HEADER, tokenService.createToken(account));
 				} else {
 					String xToken = request.getHeader(TOKEN_HEADER);
+					String login = tokenService.getLogin(xToken);
+					request.setAttribute("login", login);
 					response.setHeader(TOKEN_HEADER, tokenService.tokenValidation(xToken));
 				}
 			} catch (AccountNotFoundException e) {

@@ -59,7 +59,7 @@ public class AccountingServiceImpl implements AccountingService {
 		account.addRole(defaultRole);
 		repository.save(account);
 		AccountDto accountDto = mapper.map(account, AccountDto.class);
-		String token = tokenService.createToken(accountCreateDto.getEmail(), accountCreateDto.getPassword());
+		String token = tokenService.createToken(account);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(TOKEN_HEADER, token);
 		return new ResponseEntity<AccountDto>(accountDto, headers, HttpStatus.OK);
@@ -148,17 +148,9 @@ public class AccountingServiceImpl implements AccountingService {
 	@Override
 	public boolean blockUser(String login, String blockStatus) {
 		Account account = repository.findById(login).orElseThrow(() -> new AccountNotFoundException(login));
-		if ("true".equals(blockStatus)) {
-			account.setFlBlocked(true);
-			repository.save(account);
-			return true;
-		}
-		if ("false".equals(blockStatus)) {
-			account.setFlBlocked(false);
-			repository.save(account);
-			return true;
-		}
-		return false;
+		boolean res = account.blockAccount(blockStatus);
+		repository.save(account);
+		return res;
 	}
 
 	@Override
