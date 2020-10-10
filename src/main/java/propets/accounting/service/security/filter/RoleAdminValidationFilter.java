@@ -61,7 +61,7 @@ public class RoleAdminValidationFilter implements Filter {
 	}
 
 	private boolean checkPathAndMethod(String path, String method) {
-		boolean res = path.matches("/account/en/v1/[\\p{Graph}^/]+/role/[a-zA-Z]+/?");
+		boolean res = path.matches("/account/en/v1/[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}+/role/[a-zA-Z]+/?");
 		System.out.println("RoleAdminValidationFilter=" + res);
 		return res;
 	}

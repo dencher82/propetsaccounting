@@ -45,9 +45,9 @@ public class AccountValidationFilter implements Filter {
 	private boolean checkPathAndMethod(String path, String method) {
 		boolean res = path.matches("/account/en/v1/[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}+/?")
 				&& ("PUT".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method));
-		res = res || (path.matches("/account/en/v1/[\\w@!#$%&'*\\+-=?^_`{|}~.]+/activity/\\w+/?")
+		res = res || (path.matches("/account/en/v1/[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}+/activity/\\w+/?")
 				&& ("PUT".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)));
-		res = res || (path.matches("/account/en/v1/[\\w@!#$%&'*\\+-=?^_`{|}~.]+/favorite/\\w+/?")
+		res = res || (path.matches("/account/en/v1/[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}+/favorite/\\w+/?")
 				&& ("PUT".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)));
 		System.out.println("AccountValidationFilter=" + res);
 		return res;

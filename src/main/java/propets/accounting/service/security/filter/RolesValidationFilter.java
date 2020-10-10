@@ -49,7 +49,7 @@ public class RolesValidationFilter implements Filter {
 	}
 
 	private boolean checkPathAndMethod(String path, String method) {
-		boolean res = path.matches("/account/en/v1/[\\w@!#$%&'*\\+-=?^_`{|}~.]+/block/[a-zA-Z]+/?");
+		boolean res = path.matches("/account/en/v1/[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}+/block/[a-zA-Z]+/?");
 		System.out.println("RolesValidationFilter=" + res);
 		return res;
 	}
