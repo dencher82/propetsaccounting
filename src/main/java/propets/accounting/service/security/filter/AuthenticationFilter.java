@@ -55,7 +55,7 @@ public class AuthenticationFilter implements Filter {
 				} else {
 					String xToken = request.getHeader(TOKEN_HEADER);
 					String login = tokenService.getLogin(xToken);
-					request.setAttribute("login", login);
+					request = new WrapperRequest(request, login);
 					response.setHeader(TOKEN_HEADER, tokenService.tokenValidation(xToken));
 				}
 			} catch (AccountNotFoundException e) {

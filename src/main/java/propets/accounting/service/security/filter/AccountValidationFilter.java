@@ -1,6 +1,7 @@
 package propets.accounting.service.security.filter;
 
 import java.io.IOException;
+import java.security.Principal;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,10 +26,10 @@ public class AccountValidationFilter implements Filter {
 		String path = request.getServletPath();
 		if (checkPathAndMethod(path, request.getMethod())) {
 			try {
-				String login = request.getAttribute("login").toString();
+				Principal principal = request.getUserPrincipal();
+				String login = principal.getName();
 				String loginFromPath = path.split("/")[4];
 				if (!login.equals(loginFromPath)) {
-					System.out.println("nonAuthor");
 					response.sendError(403);
 					return;
 				}
@@ -49,7 +50,6 @@ public class AccountValidationFilter implements Filter {
 				&& ("PUT".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)));
 		res = res || (path.matches("/account/en/v1/[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}+/favorite/\\w+/?")
 				&& ("PUT".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)));
-		System.out.println("AccountValidationFilter=" + res);
 		return res;
 	}
 }

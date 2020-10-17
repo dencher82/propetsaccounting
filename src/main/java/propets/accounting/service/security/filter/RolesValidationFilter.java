@@ -1,6 +1,7 @@
 package propets.accounting.service.security.filter;
 
 import java.io.IOException;
+import java.security.Principal;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -31,10 +32,10 @@ public class RolesValidationFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) resp;
 		if (checkPathAndMethod(request.getServletPath(), request.getMethod())) {
 			try {
-				String login = request.getAttribute("login").toString();
+				Principal principal = request.getUserPrincipal();
+				String login = principal.getName();
 				Account account = repository.findById(login).orElse(null);
 				if (!account.getRoles().stream().anyMatch(r -> "ADMIN".equals(r) || "MODERATOR".equals(r))) {
-					System.out.println("nonEqualRole");
 					response.sendError(403);
 					return;
 				}
@@ -50,7 +51,6 @@ public class RolesValidationFilter implements Filter {
 
 	private boolean checkPathAndMethod(String path, String method) {
 		boolean res = path.matches("/account/en/v1/[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}+/block/[a-zA-Z]+/?");
-		System.out.println("RolesValidationFilter=" + res);
 		return res;
 	}
 
